@@ -1,4 +1,6 @@
-# 🧤 Sign Language Translating Glove
+## 🧤 Sign Language Translating Glove
+
+[![Patent Status](https://img.shields.io/badge/Patent-Filed-orange?style=for-the-badge)](https://drive.google.com/file/d/1mAWRo3B0yhgc6pjPqB1Wzh_iHI6tEH8N/view?usp=drive_link)
 
 This Arduino-based project detects hand gestures using **MPU6050 (Accelerometer + Gyroscope)** and **flex sensors** on a glove, then translates them into text (or can be extended to speech).  
 It uses an **HC-05 Bluetooth module** for wireless communication with a mobile or PC.
@@ -64,8 +66,25 @@ It uses an **HC-05 Bluetooth module** for wireless communication with a mobile o
 
 ---
 
-## 🧑‍💻 Author
+## 🧑‍💻 Authors
 **Rishi Raj**  
-**Aryan Kumar Tiwari**
-**Dhruv Kesarwani**
-*(Built for IoT + Hardware innovation projects)*  
+**Aryan Kumar Tiwari**  
+**Dhruv Kesarwani**  
+*(Built for IoT + Hardware innovation projects)*
+
+---
+
+## 🧩 Patent Information
+
+This project is officially patented in India.
+
+- **Application No.:** 202511085296 A  
+- **Date of Filing:** 09/09/2025  
+- **Publication Date:** 26/09/2025  
+- **Patent Document:** [View Patent PDF](https://drive.google.com/file/d/1mAWRo3B0yhgc6pjPqB1Wzh_iHI6tEH8N/view?usp=drive_link)
+
+> This ensures that the **Sign Language Translating Glove** is legally protected under patent law.
+
+---
+
+
