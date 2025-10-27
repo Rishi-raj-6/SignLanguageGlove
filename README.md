@@ -37,7 +37,7 @@ It uses an **HC-05 Bluetooth module** for wireless communication with a mobile o
 ## 📁 Code Overview
 - **Calibration**: Ensures each finger’s resting position is recorded.  
 - **Gesture Detection**: Maps MPU + flex sensor data to known patterns.  
-- **ASL Recognition**: Recognizes specific letters (K, I, E, T).  
+- **ASL Recognition**: Recognizes specific letters (E, I, K, T).  
 - **Recalibration**: Automatically resets thresholds if readings drift.
 
 ---
