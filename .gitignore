@@ -2,3 +2,7 @@
 *.zip
 *.bin
 *.hex
+
+# Upload service – dependencies and runtime uploads
+upload/node_modules/
+upload/uploads/

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Language Glove – File Upload</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.10);
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      margin: 0 0 .25rem;
+      color: #1a1a2e;
+    }
+
+    p.subtitle {
+      color: #666;
+      font-size: .9rem;
+      margin: 0 0 1.5rem;
+    }
+
+    .drop-zone {
+      border: 2px dashed #a0aec0;
+      border-radius: 8px;
+      padding: 2rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+      position: relative;
+    }
+
+    .drop-zone:hover,
+    .drop-zone.drag-over {
+      border-color: #4f46e5;
+      background: #f0f0ff;
+    }
+
+    .drop-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    .drop-zone .icon { font-size: 2rem; margin-bottom: .5rem; }
+    .drop-zone .label { color: #4f46e5; font-weight: 600; }
+    .drop-zone .hint { color: #888; font-size: .82rem; margin-top: .4rem; }
+
+    .file-info {
+      margin-top: 1rem;
+      font-size: .88rem;
+      color: #444;
+      min-height: 1.2em;
+    }
+
+    .supported {
+      margin-top: 1rem;
+      font-size: .8rem;
+      color: #888;
+    }
+
+    .supported span {
+      display: inline-block;
+      background: #eef2ff;
+      color: #4f46e5;
+      border-radius: 4px;
+      padding: 2px 6px;
+      margin: 2px;
+      font-weight: 600;
+    }
+
+    button[type="submit"] {
+      display: block;
+      width: 100%;
+      margin-top: 1.5rem;
+      padding: .75rem;
+      background: #4f46e5;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s;
+    }
+
+    button[type="submit"]:hover  { background: #4338ca; }
+    button[type="submit"]:disabled { background: #a5b4fc; cursor: not-allowed; }
+
+    .message {
+      margin-top: 1rem;
+      padding: .75rem 1rem;
+      border-radius: 6px;
+      font-size: .9rem;
+      display: none;
+    }
+
+    .message.success { background: #dcfce7; color: #16a34a; display: block; }
+    .message.error   { background: #fee2e2; color: #dc2626; display: block; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🧤 Sign Language Glove</h1>
+    <p class="subtitle">Upload a project document (PDF or PowerPoint)</p>
+
+    <form id="uploadForm">
+      <div class="drop-zone" id="dropZone">
+        <div class="icon">📄</div>
+        <div>
+          <span class="label">Choose a file</span> or drag it here
+        </div>
+        <div class="hint">PDF, PPTX, or PPT · max 50 MB</div>
+        <!--
+          The accept attribute tells macOS Finder (and other OS file pickers)
+          which file types to show. Including both MIME types and extensions
+          ensures broad compatibility across browsers and operating systems.
+        -->
+        <input
+          type="file"
+          id="fileInput"
+          name="file"
+          accept=".pdf,.pptx,.ppt,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-powerpoint"
+        />
+      </div>
+
+      <div class="file-info" id="fileInfo"></div>
+
+      <div class="supported">
+        Supported formats:
+        <span>.pdf</span>
+        <span>.pptx</span>
+        <span>.ppt</span>
+      </div>
+
+      <button type="submit" id="submitBtn" disabled>Upload</button>
+    </form>
+
+    <div class="message" id="statusMsg"></div>
+  </div>
+
+  <script>
+    const form      = document.getElementById('uploadForm');
+    const fileInput = document.getElementById('fileInput');
+    const fileInfo  = document.getElementById('fileInfo');
+    const submitBtn = document.getElementById('submitBtn');
+    const statusMsg = document.getElementById('statusMsg');
+    const dropZone  = document.getElementById('dropZone');
+
+    const ALLOWED_EXTENSIONS = new Set(['.pdf', '.pptx', '.ppt']);
+
+    function getExt(name) {
+      return name.slice(name.lastIndexOf('.')).toLowerCase();
+    }
+
+    function formatSize(bytes) {
+      if (bytes < 1024)       return bytes + ' B';
+      if (bytes < 1048576)    return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / 1048576).toFixed(1) + ' MB';
+    }
+
+    function handleFileSelection(file) {
+      if (!file) return;
+
+      const ext = getExt(file.name);
+      if (!ALLOWED_EXTENSIONS.has(ext)) {
+        showMessage(
+          `"${file.name}" is not supported. Please select a PDF, PPTX, or PPT file.`,
+          'error'
+        );
+        fileInput.value = '';
+        fileInfo.textContent = '';
+        submitBtn.disabled = true;
+        return;
+      }
+
+      fileInfo.textContent = `${file.name}  (${formatSize(file.size)})`;
+      submitBtn.disabled = false;
+      statusMsg.className = 'message';
+      statusMsg.textContent = '';
+    }
+
+    fileInput.addEventListener('change', () => {
+      handleFileSelection(fileInput.files[0] || null);
+    });
+
+    // Drag-and-drop support
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('drag-over');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('drag-over');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('drag-over');
+      const file = e.dataTransfer.files[0] || null;
+      if (file) {
+        // Sync the input for form submission
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        fileInput.files = dt.files;
+        handleFileSelection(file);
+      }
+    });
+
+    function showMessage(text, type) {
+      statusMsg.textContent = text;
+      statusMsg.className = 'message ' + type;
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Uploading…';
+
+      const data = new FormData();
+      data.append('file', file);
+
+      try {
+        const res  = await fetch('/upload', { method: 'POST', body: data });
+        const json = await res.json();
+
+        if (res.ok && json.success) {
+          showMessage(`✅ "${json.originalName}" uploaded successfully.`, 'success');
+          form.reset();
+          fileInfo.textContent = '';
+        } else {
+          showMessage(`❌ ${json.message}`, 'error');
+        }
+      } catch {
+        showMessage('❌ Network error. Please try again.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Upload';
+      }
+    });
+  </script>
+</body>
+</html>
