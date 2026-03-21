@@ -66,6 +66,43 @@ It uses an **HC-05 Bluetooth module** for wireless communication with a mobile o
 
 ---
 
+## 📤 File Upload Web Interface
+
+A companion web application is included in the `upload/` directory.  
+It allows team members to upload project documents (e.g., presentations, reports) directly from their file manager or Finder (macOS).
+
+### Supported file types
+
+| Format | Extension | MIME type |
+|--------|-----------|-----------|
+| PDF | `.pdf` | `application/pdf` |
+| PowerPoint (modern) | `.pptx` | `application/vnd.openxmlformats-officedocument.presentationml.presentation` |
+| PowerPoint (legacy) | `.ppt` | `application/vnd.ms-powerpoint` |
+
+Maximum file size: **50 MB**
+
+Any other format (`.txt`, `.jpg`, `.docx`, etc.) will be rejected with a clear error message.
+
+### Running locally
+
+```bash
+cd upload
+npm install
+npm start          # starts server on http://localhost:3000
+```
+
+Then open [http://localhost:3000](http://localhost:3000) in your browser.  
+Select or drag-and-drop a `.pdf`, `.pptx`, or `.ppt` file to upload it.
+
+### Running tests
+
+```bash
+cd upload
+npm test
+```
+
+---
+
 ## 🧑‍💻 Authors
 **Rishi Raj**  
 **Aryan Kumar Tiwari**  
